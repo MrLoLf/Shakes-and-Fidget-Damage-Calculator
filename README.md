@@ -10,3 +10,4 @@ You have to have python installed because the calculator was programmed in pytho
 
 
 If find any bugs please write them in the pull request.
+If u dont now how to calculate the pet value please check https://forum-int.sfgame.net/showthread.php?t=7825 out.
