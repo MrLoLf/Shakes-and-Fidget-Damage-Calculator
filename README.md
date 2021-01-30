@@ -5,7 +5,7 @@ You have to have python installed because the calculator was programmed in pytho
 
 # Use 
 - Make sure you have Python correctly installed.
-- Double click the downloaded .py file and enter your details. If you don't have any values to enter somewhere, enter 0.
+- Double click the downloaded .py file and enter your details. If you don't have any values to enter somewhere, enter 0. Dont forget to add the gems values on your normal values.
 - Press ENTER to exit. 
 
 
