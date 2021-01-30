@@ -20,11 +20,14 @@ def main():
         belt_bonus = input("Belt damage attribute bonus:")
         ring_bonus = input("Ring damage attribute bonus:")
         shamrock_bonus = input("Shamrock damage attribute bonus:")
-
-        return int(weapon_average_dmg), int(base_strength), int(strength_from_weapon), float(pet_bonus), \
-               float(potion), int(head_bonus), int(chest_bonus), int(arm_bonus), int(shoe_bonus), int(necklace_bonus), \
-               int(belt_bonus), int(ring_bonus), int(shamrock_bonus), int(class_check)
-
+        try:
+            return int(weapon_average_dmg), int(base_strength), int(strength_from_weapon), float(pet_bonus), \
+                   float(potion), int(head_bonus), int(chest_bonus), int(arm_bonus), int(shoe_bonus), \
+                   int(necklace_bonus), int(belt_bonus), int(ring_bonus), int(shamrock_bonus), int(class_check)
+        except:
+            print("\nValue Error. Please Check your entered Values.\n")
+            input("\nPress ENTER to exit\n")
+            exit(-1)
     # Strength calculation
     def strength(basis, potion, pet, strength_weapon, head, chest, arm, shoe, necklace, belt, ring, shamrock, clas):
         armor = strength_weapon + head + chest + arm + shoe + necklace + belt + ring + shamrock
@@ -69,4 +72,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    input("Press ENTER to exit")
+    input("\nPress ENTER to exit\n")
