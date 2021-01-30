@@ -1,7 +1,7 @@
 # author: Fabian Roscher
 # date: 30.01.2020
 # description: Shakes and Fidget Damage Calculator
-
+# version: 1.0
 
 def main():
     # User inputs
