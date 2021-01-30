@@ -1,4 +1,4 @@
-# Shakes-Fidget-Damage-Calculator
+# Shakes-and-Fidget-Damage-Calculator
 
 The calculator can calculate the damage for every class, except for the assasins.
 You have to have python installed because the calculator was programmed in python. You can download python from https://www.python.org/.
