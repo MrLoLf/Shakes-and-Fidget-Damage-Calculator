@@ -10,5 +10,5 @@ Python 3.9.1 is recommended.
 - Press ENTER to exit.
 
 
-If you find any bugs please write them in the pull requests.
+If you find any bugs please write them in the issues tab.
 If you don't now how to calculate the [pet value](https://forum-int.sfgame.net/showthread.php?t=7825) please check https://forum-int.sfgame.net/showthread.php?t=7825 out.
