@@ -6,6 +6,8 @@
 def main():
     # User inputs
     def inputs():
+        print("\n\nIf you have no value on any field type in it 0. Don't let it be empty.")
+        print("Or you get an Error.\n\n")
         class_check = input("If your class is Berserker or Battle Mage type here 1 other wise 0:")
         weapon_average_dmg = input("Enter your weapon's average damage:")
         base_strength = input("Base of your damage attribute:")
@@ -73,3 +75,4 @@ def main():
 if __name__ == "__main__":
     main()
     input("\nPress ENTER to exit\n")
+    exit(0)
