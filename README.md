@@ -7,3 +7,6 @@ You have to have python installed because the calculator was programmed in pytho
 - Make sure you have Python correctly installed.
 - Double click the downloaded .py file and enter your details. If you don't have any values to enter somewhere, enter 0.
 - Press ENTER to exit. 
+
+
+If find any bugs please write them in the pull request.
