@@ -5,7 +5,7 @@ The calculator is not 100% correct because values could be rounded differently b
 You have to have Python installed because the calculator was programmed in Python. You can download [Python](https://www.python.org/) from https://www.python.org/.  
 Python 3.9.2 is recommended. You need to install ttkthemes after you installed Python by going to your console and wirte pip install ttkthemes.
 
-You can [download](https://filefla.me/?bucket=i4z3e8&lang=de) a exe from https://filefla.me/?bucket=i4z3e8&lang=de with that you dont need any python.
+You can [download](https://drive.google.com/file/d/16LoEGsLwutlf5IRV0P_zgGbNwkL1wZYG/view?usp=sharing) a exe from https://drive.google.com/file/d/16LoEGsLwutlf5IRV0P_zgGbNwkL1wZYG/view?usp=sharing with that you dont need any python.
 
 ### Usage
 - Make sure you have Python correctly installed and ttkthemes
