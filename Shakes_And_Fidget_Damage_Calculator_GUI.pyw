@@ -81,6 +81,7 @@ class App:
         ttk.Label(frame, text="Choose your class: ", font=self.style).grid(row=0, column=0, padx=10, pady=10)
         ttk.OptionMenu(frame, self.var, *self.options, style="my.TButton",
                        command=lambda event: self.entry()).grid(row=0, column=1, padx=10, pady=10)
+        self.root.minsize(374, 59)
 
     def entry(self):
 
@@ -188,8 +189,9 @@ class App:
                                                                                                     padx=10, pady=5,
                                                                                                     sticky="nw")
         self.portal_bonus.trace("w", lambda *args: character_limit(self.portal_bonus))
-
+        self.root.minsize(843, 400)
         if self.var.get() == "Assassin":
+
             ttk.Label(self.frame_entry, text="Weapon 2 average damage:", font=self.style).grid(row=8, column=0,
                                                                                                sticky="nw",
                                                                                                padx=10, pady=5)
@@ -209,6 +211,8 @@ class App:
                                                                                                           pady=5,
                                                                                                           sticky="nw")
             self.weapon_attri_2.trace("w", lambda *args: character_limit(self.weapon_attri_2))
+
+            self.root.minsize(879, 444)
 
         ttk.Button(self.frame_entry, text="Calculate", command=self.calculate, style="my.TButton",
                    width=9).grid(row=9, column=3, padx=10, pady=5)
@@ -244,7 +248,6 @@ class App:
                 weapon_attri = 0
             if base_strength == "":
                 base_strength = 0
-
             if pet_bonus == "":
                 pet_bonus = 0
             elif pet_bonus[-1] == "%":
