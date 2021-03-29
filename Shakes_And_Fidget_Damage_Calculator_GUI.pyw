@@ -346,7 +346,7 @@ class App:
             dmg = weapon_dmg * (1 + strength / 10)
 
         if portal_bonus != 0:
-            dmg = dmg / 100
+            dmg /= 100
             portal_bonus += 100
             dmg *= portal_bonus
 
