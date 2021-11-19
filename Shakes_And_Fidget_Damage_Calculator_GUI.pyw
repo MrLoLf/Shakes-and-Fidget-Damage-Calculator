@@ -2,37 +2,33 @@
 
 """
 author: Fabian Roscher
-date: 28.03.2021
+date: 19.11.2021
 description: Shakes and Fidget Damage Calculator
 version: 1.0
 """
 
-try:
-    from ttkthemes import ThemedTk
-    from tkinter import ttk, IntVar, StringVar
-    from tkinter.font import Font
-    from tkinter.messagebox import showerror
-except ImportError:
-    from ttkthemes import ThemedTk
-    from tkinter import ttk, IntVar, StringVar
-    from tkinter.font import Font
-    from tkinter.messagebox import showerror
+from tkinter import ttk, IntVar, StringVar
+from tkinter.font import Font
+from tkinter.messagebox import showerror
 
-    exit(-1)
+from ttkthemes import ThemedTk
 
 
 def error():
+    # displaying a messagebox with a error message
     showerror(title="Error", message="Please check your entries and make sure to write float numbers like 1.25 and not "
                                      "like 1,25.")
 
 
 def character_limit(entry_text):
+    # limits the entry to 10 characters
     if len(entry_text.get()) > 0:
         entry_text.set(entry_text.get()[:10])
 
 
 class App:
     def __init__(self, master):
+        # defining variables, styles and frames for the application
         super().__init__()
         self.root = master
         self.width = 1
@@ -40,7 +36,7 @@ class App:
         self.style = Font(family="Arial", size=16)
         self.button_style = ttk.Style()
         self.button_style.configure('my.TButton', font=('Arial', 16))
-        self.options = ["Choose here", "Battle Mage", "Berserker", "Mage", "Warrior", "Druid", "Scout", "Assassin",
+        self.options = ["Choose here", "Battle Mage", "Berserk", "Mage", "Warrior", "Druid", "Scout", "Assassin",
                         "Demon Hunter"]
         # Variables
         self.radi = IntVar()
@@ -75,7 +71,7 @@ class App:
         self.gui()
 
     def gui(self):
-
+        # first window shown to choose between the characters
         frame = ttk.Frame(self.frame_main)
         frame.grid(row=0, column=0)
         ttk.Label(frame, text="Choose your class: ", font=self.style).grid(row=0, column=0, padx=10, pady=10)
@@ -84,10 +80,12 @@ class App:
         self.root.minsize(374, 59)
 
     def entry(self):
+        # setting all buttons, entry's and labels
 
+        # deleting the old widgets (buttons, entry's ...)
         for widget in self.frame_entry.winfo_children():
             widget.destroy()
-        self.frame_entry.pack_forget()  # löschen der alten widgets (Label und Button ...)
+        self.frame_entry.pack_forget()
 
         self.root.update()
 
@@ -190,8 +188,10 @@ class App:
                                                                                                     sticky="nw")
         self.portal_bonus.trace("w", lambda *args: character_limit(self.portal_bonus))
         self.root.minsize(843, 400)
-        if self.var.get() == "Assassin":
 
+        # checks if the chosen character is assassin and if it is add another entry field for the weapon damage and
+        # attributes
+        if self.var.get() == "Assassin":
             ttk.Label(self.frame_entry, text="Weapon 2 average damage:", font=self.style).grid(row=8, column=0,
                                                                                                sticky="nw",
                                                                                                padx=10, pady=5)
@@ -220,11 +220,12 @@ class App:
         ttk.Label(self.frame_entry, text="Damage:", font=self.style).grid(row=9, column=0, padx=10, pady=10)
         ttk.Label(self.frame_entry, textvariable=self.dmg, font=self.style).grid(row=9, column=1, padx=10, pady=10)
 
+        # by pressing the enter key the methode calculate gets called
         self.root.bind("<Return>", lambda event: self.calculate())
 
     def calculate(self):
         try:
-
+            # getting variables from the entry's
             weapon_dmg = self.weapon_dmg.get()
             weapon_attri = self.weapon_attri.get()
             base_strength = self.base_strength.get()
@@ -242,6 +243,7 @@ class App:
             weapon_dmg_2 = self.weapon_dmg_2.get()
             portal_bonus = self.portal_bonus.get()
 
+            # checking if the entry is empty if it is a standard value is set
             if weapon_dmg == "":
                 weapon_dmg = 0
             if weapon_attri == "":
@@ -289,6 +291,7 @@ class App:
             elif portal_bonus[-1] == "%":
                 portal_bonus = float(portal_bonus[0:-1])
 
+            # getting the int of every variable that the user enters
             portal_bonus = int(portal_bonus)
             weapon_dmg = int(weapon_dmg)
             weapon_attri = int(weapon_attri)
@@ -307,14 +310,19 @@ class App:
             weapon_attri_2 = int(weapon_attri_2)
 
         except ValueError:
+            # throwing a error messagebox if a value was erroneously entered or a character was written in it instead
+            # of an int
             error()
             return None
 
+        # adding armor values to one variable
         armor = weapon_attri + head_bonus + chest_bonus + arm_bonus + shoe_bonus + necklace_bonus + belt_bonus + \
                 ring_bonus + shamrock_bonus
         strength = base_strength
 
-        if self.var.get() == "Battle Mage" or self.var.get() == "Berserker":
+        # checks which class is chosen
+        if self.var.get() == "Battle Mage" or self.var.get() == "Berserk":
+            # class specific calculations for damage
             bonus = armor * 0.11
             bonus = round(bonus, 2)
             strength += bonus
@@ -347,17 +355,20 @@ class App:
                 strength *= pet_bonus
             strength = round(strength)
             dmg = weapon_dmg * (1 + strength / 10)
-
+        # adding portal bonus to damage
         if portal_bonus != 0:
             dmg /= 100
             portal_bonus += 100
             dmg *= portal_bonus
-
+        # rounding the damage to an int
         dmg = round(dmg)
+
+        # setting the variable that displays the damage
         self.dmg.set(dmg)
 
 
 if __name__ == "__main__":
+    # checks if the program is started as a main program and isn't imported
     root = ThemedTk(theme="equilux")
     calc = App(root)
     root.mainloop()
