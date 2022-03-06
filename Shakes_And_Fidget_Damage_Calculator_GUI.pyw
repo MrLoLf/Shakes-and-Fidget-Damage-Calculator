@@ -15,7 +15,7 @@ from ttkthemes import ThemedTk
 
 
 def error():
-    # displaying a messagebox with a error message
+    # displaying a messagebox with an error message
     showerror(title="Error", message="Please check your entries and make sure to write float numbers like 1.25 and not "
                                      "like 1,25.")
 
@@ -189,7 +189,7 @@ class App:
         self.portal_bonus.trace("w", lambda *args: character_limit(self.portal_bonus))
         self.root.minsize(843, 400)
 
-        # checks if the chosen character is assassin and if it is add another entry field for the weapon damage and
+        # checks if the chosen character is assassin and if it is, add another entry field for the weapon damage and
         # attributes
         if self.var.get() == "Assassin":
             ttk.Label(self.frame_entry, text="Weapon 2 average damage:", font=self.style).grid(row=8, column=0,
@@ -310,7 +310,7 @@ class App:
             weapon_attri_2 = int(weapon_attri_2)
 
         except ValueError:
-            # throwing a error messagebox if a value was erroneously entered or a character was written in it instead
+            # throwing an error messagebox if a value was erroneously entered or a character was written in it instead
             # of an int
             error()
             return None
@@ -364,7 +364,7 @@ class App:
         dmg = round(dmg)
 
         # setting the variable that displays the damage
-        self.dmg.set(dmg)
+        self.dmg.set(str(dmg))
 
 
 if __name__ == "__main__":
