@@ -4,7 +4,7 @@ The calculator can calculate the damage for every class.
 It is not 100% correct because values could be rounded differently by Shakes & Fidget.   But the calculator matches most of the time really close to the actual value.  
 
 You have to have Python installed if you want to use the .pyw. You can download [Python](https://www.python.org/) from https://www.python.org/.  
-Python 3.9.2 is recommended. You need to install ttkthemes after you installed Python by going to your console and wirte pip install ttkthemes.
+Python 3.11 is recommended. You need to install ttkthemes after you installed Python by going to your console and wirte pip install ttkthemes.
 
 You can download the .exe from GitHub Releases.  
 With the .exe you don't need Python installed or any library.
