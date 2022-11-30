@@ -7,13 +7,13 @@ You have to have Python installed if you want to use the .pyw. You can download 
 Python 3.9.2 is recommended. You need to install ttkthemes after you installed Python by going to your console and wirte pip install ttkthemes.
 
 You can download the .exe from GitHub Releases.  
-With the .exe you don't need Python installed or any librarrys.
+With the .exe you don't need Python installed or any library.
 
 ### Usage
 - Make sure you have Python correctly installed and ttkthemes
 - Or make sure to have the .exe downloaded
 - It takes some time to start so be patiently
-- Double click the downloaded .pyw file or the .exe and enter your values. Don't forget to add the gems values on your normal values.
+- Double-click the downloaded .pyw file or the .exe and enter your values. Don't forget to add the gems values on your normal values.
 
 If you find any bugs please write them in the issues tab.
-If you don't now how to calculate the [pet value](https://forum-int.sfgame.net/showthread.php?t=7825) please check https://forum-int.sfgame.net/showthread.php?t=7825 out.
+If you don't know how to calculate the [pet value](https://forum-int.sfgame.net/showthread.php?t=7825) please check https://forum-int.sfgame.net/showthread.php?t=7825 out.

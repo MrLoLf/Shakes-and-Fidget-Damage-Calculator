@@ -3,16 +3,13 @@
 
 """
 author: Fabian Roscher
-date: 19.11.2021
+date: 25.11.2022
 description: Shakes and Fidget Damage Calculator
-version: 1.0
+version: 1.1
 """
 
-from tkinter import ttk, IntVar, StringVar
-from tkinter.font import Font
 from tkinter.messagebox import showerror
-
-from ttkthemes import ThemedTk
+from customtkinter import StringVar, CTk, CTkFrame, CTkLabel, CTkOptionMenu, CTkEntry, CTkButton
 
 
 def error():
@@ -21,294 +18,272 @@ def error():
                                      "like 1,25.")
 
 
+def calc_dmg(strength: int, armor: int, potion: float, pet_bonus: float) -> int:
+    # calculates the damage
+    strength += armor
+    if potion != 0:
+        strength *= potion
+    strength = round(strength, 2)
+    if pet_bonus != 0:
+        strength *= pet_bonus
+    return round(strength)
+
+
 def character_limit(entry_text):
     # limits the entry to 10 characters
     if len(entry_text.get()) > 0:
         entry_text.set(entry_text.get()[:10])
 
 
+def percent_sign(value: str) -> str:
+    # takes the value before the % sign
+    return value[0:-1] if value[-1] == "%" else value
+
+
+def to_high_val(value: str) -> float:
+    # checks if the value entered is too high e.g. when a number with a % sign was entered
+    return float(value) / 100 + 1 if float(value) >= 2.0 else float(value)
+
+
+def set_def(value: str) -> str:
+    # sets the default value to 0 if nothing got typed in
+    return 0 if value == "" else percent_sign(value)
+
+
 class App:
     def __init__(self, master):
         # defining variables, styles and frames for the application
         super().__init__()
-        self.root = master
-        self.width = 1
-        self.height = 1
-        self.style = Font(family="Arial", size=16)
-        self.button_style = ttk.Style()
-        self.button_style.configure('my.TButton', font=('Arial', 16))
-        self.options = ["Choose here", "Battle Mage", "Berserk", "Mage", "Warrior", "Druid", "Scout", "Assassin",
-                        "Demon Hunter"]
+        self.__root = master
+        self.__options = ["Battle Mage", "Berserk", "Mage", "Warrior", "Druid", "Scout", "Assassin",
+                          "Demon Hunter"]
         # Variables
-        self.radi = IntVar()
-        self.var = StringVar()
-        self.var.set(self.options[0])  # default value
-        self.weapon_dmg = StringVar()
-        self.weapon_attri = StringVar()
-        self.base_strength = StringVar()
-        self.pet_bonus = StringVar()
-        self.potion = StringVar()
-        self.head_bonus = StringVar()
-        self.chest_bonus = StringVar()
-        self.arm_bonus = StringVar()
-        self.shoe_bonus = StringVar()
-        self.necklace_bonus = StringVar()
-        self.belt_bonus = StringVar()
-        self.ring_bonus = StringVar()
-        self.shamrock_bonus = StringVar()
-        self.weapon_dmg_2 = StringVar()
-        self.weapon_attri_2 = StringVar()
-        self.dmg = StringVar()
-        self.portal_bonus = StringVar()
+        self.__var = StringVar()
+        self.__var.set(self.__options[0])  # default value
+        self.__weapon_dmg = StringVar()
+        self.__weapon_attribute = StringVar()
+        self.__base_strength = StringVar()
+        self.__pet_bonus = StringVar()
+        self.__potion = StringVar()
+        self.__head_bonus = StringVar()
+        self.__chest_bonus = StringVar()
+        self.__arm_bonus = StringVar()
+        self.__shoe_bonus = StringVar()
+        self.__necklace_bonus = StringVar()
+        self.__belt_bonus = StringVar()
+        self.__ring_bonus = StringVar()
+        self.__shamrock_bonus = StringVar()
+        self.__weapon_dmg_2 = StringVar()
+        self.__weapon_attribute_2 = StringVar()
+        self.__dmg = StringVar()
+        self.__portal_bonus = StringVar()
 
-        self.root.title("Shakes and Fidget Damage Calculator")
-        self.root.configure(bg="#3C3C3C")
-        self.frame_main = ttk.Frame(self.root)
-        self.frame_main.grid(row=0, column=0)
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        self.frame_entry = ttk.Frame(self.frame_main)
-        self.frame_entry.grid(row=1, column=0)
-        self.gui()
+        self.__root.title("Shakes and Fidget Damage Calculator")
+        self.__frame_main = CTkFrame(self.__root)
+        self.__frame_main.grid(row=0, column=0)
+        self.__root.columnconfigure(0, weight=1)
+        self.__root.rowconfigure(0, weight=1)
+        self.__frame_entry = CTkFrame(self.__frame_main)
+        self.__frame_entry.grid(row=1, column=0)
+        self.__entry()
 
-    def gui(self):
-        # first window shown to choose between the characters
-        frame = ttk.Frame(self.frame_main)
-        frame.grid(row=0, column=0)
-        ttk.Label(frame, text="Choose your class: ", font=self.style).grid(row=0, column=0, padx=10, pady=10)
-        ttk.OptionMenu(frame, self.var, *self.options, style="my.TButton",
-                       command=lambda event: self.entry()).grid(row=0, column=1, padx=10, pady=10)
-        self.root.minsize(374, 59)
-
-    def entry(self):
+    def __entry(self):
         # setting all buttons, entry's and labels
 
         # deleting the old widgets (buttons, entry's ...)
-        for widget in self.frame_entry.winfo_children():
+        for widget in self.__frame_entry.winfo_children():
             widget.destroy()
-        self.frame_entry.pack_forget()
+        self.__frame_entry.grid_forget()
 
-        self.root.update()
+        self.__frame_main = CTkFrame(self.__root)
+        self.__frame_main.grid(row=0, column=0)
+        self.__root.columnconfigure(0, weight=1)
+        self.__root.rowconfigure(0, weight=1)
+        self.__frame_entry = CTkFrame(self.__frame_main)
+        self.__frame_entry.grid(row=1, column=0)
 
-        ttk.Label(self.frame_entry, text="Weapon average damage:", font=self.style).grid(row=1, column=0, sticky="nw",
-                                                                                         padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.weapon_dmg, font=self.style, width=10).grid(row=1, column=1,
-                                                                                                  padx=10, pady=5,
-                                                                                                  sticky="nw")
-        self.weapon_dmg.trace("w", lambda *args: character_limit(self.weapon_dmg))
+        frame = CTkFrame(self.__frame_main)
+        frame.grid(row=0, column=0)
+        CTkLabel(frame, text="Choose your class: ").grid(row=0, column=0, padx=10, pady=10)
+        CTkOptionMenu(frame, variable=self.__var, values=self.__options,
+                      command=lambda event: self.__entry()).grid(row=0, column=1, padx=10, pady=10)
 
-        ttk.Label(self.frame_entry, text="Weapon damage attribute:", font=self.style).grid(row=1, column=2, sticky="nw",
-                                                                                           padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.weapon_attri, font=self.style, width=10).grid(row=1, column=3,
-                                                                                                    padx=10, pady=5,
-                                                                                                    sticky="nw")
-        self.weapon_attri.trace("w", lambda *args: character_limit(self.weapon_attri))
+        self.__root.update()
+        self.__root.minsize(620, 362)
 
-        ttk.Label(self.frame_entry, text="Damage base attribute:", font=self.style).grid(row=2, column=0, sticky="nw",
-                                                                                         padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.base_strength, font=self.style, width=10).grid(row=2, column=1,
-                                                                                                     padx=10, pady=5,
-                                                                                                     sticky="nw")
-        self.base_strength.trace("w", lambda *args: character_limit(self.base_strength))
+        CTkLabel(self.__frame_entry, text="Weapon average damage:").grid(row=1, column=0,
+                                                                         sticky="nw",
+                                                                         padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__weapon_dmg, width=100).grid(row=1, column=1,
+                                                                                     padx=10, pady=5,
+                                                                                     sticky="nw")
+        self.__weapon_dmg.trace("w", lambda *args: character_limit(self.__weapon_dmg))
 
-        ttk.Label(self.frame_entry, text="Pet bonus:", font=self.style).grid(row=2, column=2, sticky="nw",
-                                                                             padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.pet_bonus, font=self.style, width=10).grid(row=2, column=3,
-                                                                                                 padx=10, pady=5,
-                                                                                                 sticky="nw")
-        self.pet_bonus.trace("w", lambda *args: character_limit(self.pet_bonus))
+        CTkLabel(self.__frame_entry, text="Weapon damage attribute:").grid(row=1, column=2,
+                                                                           sticky="nw",
+                                                                           padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__weapon_attribute, width=100).grid(row=1,
+                                                                                           column=3,
+                                                                                           padx=10,
+                                                                                           pady=5,
+                                                                                           sticky="nw")
+        self.__weapon_attribute.trace("w", lambda *args: character_limit(self.__weapon_attribute))
 
-        ttk.Label(self.frame_entry, text="Potion bonus:", font=self.style).grid(row=3, column=0, sticky="nw",
-                                                                                padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.potion, font=self.style, width=10).grid(row=3, column=1,
-                                                                                              padx=10, pady=5,
-                                                                                              sticky="nw")
-        self.potion.trace("w", lambda *args: character_limit(self.potion))
+        CTkLabel(self.__frame_entry, text="Damage base attribute:").grid(row=2, column=0,
+                                                                         sticky="nw",
+                                                                         padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__base_strength, width=100).grid(row=2,
+                                                                                        column=1,
+                                                                                        padx=10,
+                                                                                        pady=5,
+                                                                                        sticky="nw")
+        self.__base_strength.trace("w", lambda *args: character_limit(self.__base_strength))
 
-        ttk.Label(self.frame_entry, text="Helm bonus:", font=self.style).grid(row=3, column=2, sticky="nw",
-                                                                              padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.head_bonus, font=self.style, width=10).grid(row=3, column=3,
-                                                                                                  padx=10, pady=5,
-                                                                                                  sticky="nw")
-        self.head_bonus.trace("w", lambda *args: character_limit(self.head_bonus))
+        CTkLabel(self.__frame_entry, text="Pet bonus:").grid(row=2, column=2, sticky="nw",
+                                                             padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__pet_bonus, width=100).grid(row=2, column=3,
+                                                                                    padx=10, pady=5,
+                                                                                    sticky="nw")
+        self.__pet_bonus.trace("w", lambda *args: character_limit(self.__pet_bonus))
 
-        ttk.Label(self.frame_entry, text="Chest bonus:", font=self.style).grid(row=4, column=0, sticky="nw",
-                                                                               padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.chest_bonus, font=self.style, width=10).grid(row=4, column=1,
-                                                                                                   padx=10, pady=5,
-                                                                                                   sticky="nw")
-        self.chest_bonus.trace("w", lambda *args: character_limit(self.chest_bonus))
+        CTkLabel(self.__frame_entry, text="Potion bonus:").grid(row=3, column=0, sticky="nw",
+                                                                padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__potion, width=100).grid(row=3, column=1,
+                                                                                 padx=10, pady=5,
+                                                                                 sticky="nw")
+        self.__potion.trace("w", lambda *args: character_limit(self.__potion))
 
-        ttk.Label(self.frame_entry, text="Arm bonus:", font=self.style).grid(row=4, column=2, sticky="nw",
-                                                                             padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.arm_bonus, font=self.style, width=10).grid(row=4, column=3,
-                                                                                                 padx=10, pady=5,
-                                                                                                 sticky="nw")
-        self.arm_bonus.trace("w", lambda *args: character_limit(self.arm_bonus))
+        CTkLabel(self.__frame_entry, text="Helm bonus:").grid(row=3, column=2, sticky="nw",
+                                                              padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__head_bonus, width=100).grid(row=3, column=3,
+                                                                                     padx=10, pady=5,
+                                                                                     sticky="nw")
+        self.__head_bonus.trace("w", lambda *args: character_limit(self.__head_bonus))
 
-        ttk.Label(self.frame_entry, text="Shoes bonus:", font=self.style).grid(row=5, column=0, sticky="nw",
-                                                                               padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.shoe_bonus, font=self.style, width=10).grid(row=5, column=1,
-                                                                                                  padx=10, pady=5,
-                                                                                                  sticky="nw")
-        self.shoe_bonus.trace("w", lambda *args: character_limit(self.shoe_bonus))
+        CTkLabel(self.__frame_entry, text="Chest bonus:").grid(row=4, column=0, sticky="nw",
+                                                               padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__chest_bonus, width=100).grid(row=4,
+                                                                                      column=1,
+                                                                                      padx=10,
+                                                                                      pady=5,
+                                                                                      sticky="nw")
+        self.__chest_bonus.trace("w", lambda *args: character_limit(self.__chest_bonus))
 
-        ttk.Label(self.frame_entry, text="Necklace bonus:", font=self.style).grid(row=5, column=2, sticky="nw",
-                                                                                  padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.necklace_bonus, font=self.style, width=10).grid(row=5, column=3,
-                                                                                                      padx=10, pady=5,
-                                                                                                      sticky="nw")
-        self.necklace_bonus.trace("w", lambda *args: character_limit(self.necklace_bonus))
+        CTkLabel(self.__frame_entry, text="Arm bonus:").grid(row=4, column=2, sticky="nw",
+                                                             padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__arm_bonus, width=100).grid(row=4, column=3,
+                                                                                    padx=10, pady=5,
+                                                                                    sticky="nw")
+        self.__arm_bonus.trace("w", lambda *args: character_limit(self.__arm_bonus))
 
-        ttk.Label(self.frame_entry, text="Belt bonus:", font=self.style).grid(row=6, column=0, sticky="nw",
-                                                                              padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.belt_bonus, font=self.style, width=10).grid(row=6, column=1,
-                                                                                                  padx=10, pady=5,
-                                                                                                  sticky="nw")
-        self.belt_bonus.trace("w", lambda *args: character_limit(self.belt_bonus))
+        CTkLabel(self.__frame_entry, text="Shoes bonus:").grid(row=5, column=0, sticky="nw",
+                                                               padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__shoe_bonus, width=100).grid(row=5, column=1,
+                                                                                     padx=10, pady=5,
+                                                                                     sticky="nw")
+        self.__shoe_bonus.trace("w", lambda *args: character_limit(self.__shoe_bonus))
 
-        ttk.Label(self.frame_entry, text="Ring bonus:", font=self.style).grid(row=6, column=2, sticky="nw",
-                                                                              padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.ring_bonus, font=self.style, width=10).grid(row=6, column=3,
-                                                                                                  padx=10, pady=5,
-                                                                                                  sticky="nw")
-        self.ring_bonus.trace("w", lambda *args: character_limit(self.ring_bonus))
+        CTkLabel(self.__frame_entry, text="Necklace bonus:").grid(row=5, column=2, sticky="nw",
+                                                                  padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__necklace_bonus, width=100).grid(row=5,
+                                                                                         column=3,
+                                                                                         padx=10,
+                                                                                         pady=5,
+                                                                                         sticky="nw")
+        self.__necklace_bonus.trace("w", lambda *args: character_limit(self.__necklace_bonus))
 
-        ttk.Label(self.frame_entry, text="Shamrock bonus:", font=self.style).grid(row=7, column=0, sticky="nw",
-                                                                                  padx=10, pady=5)
+        CTkLabel(self.__frame_entry, text="Belt bonus:").grid(row=6, column=0, sticky="nw",
+                                                              padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__belt_bonus, width=100).grid(row=6, column=1,
+                                                                                     padx=10, pady=5,
+                                                                                     sticky="nw")
+        self.__belt_bonus.trace("w", lambda *args: character_limit(self.__belt_bonus))
 
-        ttk.Entry(self.frame_entry, textvariable=self.shamrock_bonus, font=self.style, width=10).grid(row=7, column=1,
-                                                                                                      padx=10, pady=5,
-                                                                                                      sticky="nw")
-        self.shamrock_bonus.trace("w", lambda *args: character_limit(self.shamrock_bonus))
+        CTkLabel(self.__frame_entry, text="Ring bonus:").grid(row=6, column=2, sticky="nw",
+                                                              padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__ring_bonus, width=100).grid(row=6, column=3,
+                                                                                     padx=10, pady=5,
+                                                                                     sticky="nw")
+        self.__ring_bonus.trace("w", lambda *args: character_limit(self.__ring_bonus))
 
-        ttk.Label(self.frame_entry, text="Portal bonus:", font=self.style).grid(row=7, column=2, sticky="nw",
-                                                                                padx=10, pady=5)
-        ttk.Entry(self.frame_entry, textvariable=self.portal_bonus, font=self.style, width=10).grid(row=7, column=3,
-                                                                                                    padx=10, pady=5,
-                                                                                                    sticky="nw")
-        self.portal_bonus.trace("w", lambda *args: character_limit(self.portal_bonus))
-        self.root.minsize(843, 400)
+        CTkLabel(self.__frame_entry, text="Shamrock bonus:").grid(row=7, column=0, sticky="nw",
+                                                                  padx=10, pady=5)
+
+        CTkEntry(self.__frame_entry, textvariable=self.__shamrock_bonus, width=100).grid(row=7,
+                                                                                         column=1,
+                                                                                         padx=10,
+                                                                                         pady=5,
+                                                                                         sticky="nw")
+        self.__shamrock_bonus.trace("w", lambda *args: character_limit(self.__shamrock_bonus))
+
+        CTkLabel(self.__frame_entry, text="Portal bonus:").grid(row=7, column=2, sticky="nw",
+                                                                padx=10, pady=5)
+        CTkEntry(self.__frame_entry, textvariable=self.__portal_bonus, width=100).grid(row=7,
+                                                                                       column=3,
+                                                                                       padx=10,
+                                                                                       pady=5,
+                                                                                       sticky="nw")
+        self.__portal_bonus.trace("w", lambda *args: character_limit(self.__portal_bonus))
 
         # checks if the chosen character is assassin and if it is, add another entry field for the weapon damage and
         # attributes
-        if self.var.get() == "Assassin":
-            ttk.Label(self.frame_entry, text="Weapon 2 average damage:", font=self.style).grid(row=8, column=0,
-                                                                                               sticky="nw",
-                                                                                               padx=10, pady=5)
+        if self.__var.get() == "Assassin":
+            CTkLabel(self.__frame_entry, text="Weapon 2 average damage:").grid(row=8, column=0,
+                                                                               sticky="nw",
+                                                                               padx=10, pady=5)
 
-            ttk.Entry(self.frame_entry, textvariable=self.weapon_dmg_2, font=self.style, width=10).grid(row=8, column=1,
-                                                                                                        padx=10, pady=5,
-                                                                                                        sticky="nw")
-            self.weapon_dmg_2.trace("w", lambda *args: character_limit(self.weapon_dmg_2))
+            CTkEntry(self.__frame_entry, textvariable=self.__weapon_dmg_2, width=100).grid(row=8,
+                                                                                           column=1,
+                                                                                           padx=10,
+                                                                                           pady=5,
+                                                                                           sticky="nw")
+            self.__weapon_dmg_2.trace("w", lambda *args: character_limit(self.__weapon_dmg_2))
 
-            ttk.Label(self.frame_entry, text="Weapon 2 damage attribute:", font=self.style).grid(row=8, column=2,
-                                                                                                 sticky="nw", padx=10,
-                                                                                                 pady=5)
+            CTkLabel(self.__frame_entry, text="Weapon 2 damage attribute:").grid(row=8, column=2,
+                                                                                 sticky="nw",
+                                                                                 padx=10,
+                                                                                 pady=5)
 
-            ttk.Entry(self.frame_entry, textvariable=self.weapon_attri_2, font=self.style, width=10).grid(row=8,
-                                                                                                          column=3,
-                                                                                                          padx=10,
-                                                                                                          pady=5,
-                                                                                                          sticky="nw")
-            self.weapon_attri_2.trace("w", lambda *args: character_limit(self.weapon_attri_2))
+            CTkEntry(self.__frame_entry, textvariable=self.__weapon_attribute_2, width=100).grid(
+                row=8,
+                column=3,
+                padx=10,
+                pady=5,
+                sticky="nw")
+            self.__weapon_attribute_2.trace("w", lambda *args: character_limit(self.__weapon_attribute_2))
 
-            self.root.minsize(879, 444)
+            self.__root.minsize(640, 395)
 
-        ttk.Button(self.frame_entry, text="Calculate", command=self.calculate, style="my.TButton",
-                   width=9).grid(row=9, column=3, padx=10, pady=5)
+        CTkButton(self.__frame_entry, text="Calculate", command=self.__calculate,
+                  width=9).grid(row=9, column=3, padx=10, pady=5)
 
-        ttk.Label(self.frame_entry, text="Damage:", font=self.style).grid(row=9, column=0, padx=10, pady=10)
-        ttk.Label(self.frame_entry, textvariable=self.dmg, font=self.style).grid(row=9, column=1, padx=10, pady=10)
+        CTkLabel(self.__frame_entry, text="Damage:").grid(row=9, column=0, padx=10, pady=10)
+        CTkLabel(self.__frame_entry, textvariable=self.__dmg).grid(row=9, column=1, padx=10,
+                                                                   pady=10)
 
         # by pressing the enter key the methode calculate gets called
-        self.root.bind("<Return>", lambda event: self.calculate())
+        self.__root.bind("<Return>", lambda event: self.__calculate)
 
-    def calculate(self):
+    def __calculate(self):
         try:
             # getting variables from the entry's
-            weapon_dmg = self.weapon_dmg.get()
-            weapon_attri = self.weapon_attri.get()
-            base_strength = self.base_strength.get()
-            pet_bonus = self.pet_bonus.get()
-            potion = self.potion.get()
-            head_bonus = self.head_bonus.get()
-            chest_bonus = self.chest_bonus.get()
-            arm_bonus = self.arm_bonus.get()
-            shoe_bonus = self.shoe_bonus.get()
-            necklace_bonus = self.necklace_bonus.get()
-            belt_bonus = self.belt_bonus.get()
-            ring_bonus = self.ring_bonus.get()
-            shamrock_bonus = self.shamrock_bonus.get()
-            weapon_attri_2 = self.weapon_attri_2.get()
-            weapon_dmg_2 = self.weapon_dmg_2.get()
-            portal_bonus = self.portal_bonus.get()
-
-            # checking if the entry is empty if it is a standard value is set
-            if weapon_dmg == "":
-                weapon_dmg = 0
-            if weapon_attri == "":
-                weapon_attri = 0
-            if base_strength == "":
-                base_strength = 0
-            if pet_bonus == "":
-                pet_bonus = 0
-            elif pet_bonus[-1] == "%":
-                pet_bonus = float(pet_bonus[0:-1])
-            if float(pet_bonus) >= 2:
-                pet_bonus = float(pet_bonus)
-                pet_bonus /= 100
-                pet_bonus += 1
-            if potion == "":
-                potion = 0
-            elif potion[-1] == "%":
-                potion = float(potion[0:-1])
-            if float(potion) >= 2:
-                potion = float(potion)
-                potion /= 100
-                potion += 1
-            if head_bonus == "":
-                head_bonus = 0
-            if chest_bonus == "":
-                chest_bonus = 0
-            if arm_bonus == "":
-                arm_bonus = 0
-            if shoe_bonus == "":
-                shoe_bonus = 0
-            if necklace_bonus == "":
-                necklace_bonus = 0
-            if belt_bonus == "":
-                belt_bonus = 0
-            if ring_bonus == "":
-                ring_bonus = 0
-            if shamrock_bonus == "":
-                shamrock_bonus = 0
-            if weapon_dmg_2 == "":
-                weapon_dmg_2 = 0
-            if weapon_attri_2 == "":
-                weapon_attri_2 = 0
-            if portal_bonus == "":
-                portal_bonus = 0
-            elif portal_bonus[-1] == "%":
-                portal_bonus = float(portal_bonus[0:-1])
-
-            # getting the int of every variable that the user enters
-            portal_bonus = int(portal_bonus)
-            weapon_dmg = int(weapon_dmg)
-            weapon_attri = int(weapon_attri)
-            base_strength = int(base_strength)
-            pet_bonus = float(pet_bonus)
-            potion = float(potion)
-            head_bonus = int(head_bonus)
-            chest_bonus = int(chest_bonus)
-            arm_bonus = int(arm_bonus)
-            shoe_bonus = int(shoe_bonus)
-            necklace_bonus = int(necklace_bonus)
-            belt_bonus = int(belt_bonus)
-            ring_bonus = int(ring_bonus)
-            shamrock_bonus = int(shamrock_bonus)
-            weapon_dmg_2 = int(weapon_dmg_2)
-            weapon_attri_2 = int(weapon_attri_2)
+            # TODO: check if this can be optimized due to doing basically the same every time
+            weapon_dmg: int = int(set_def(self.__weapon_dmg.get()))
+            weapon_attribute: int = int(set_def(self.__weapon_attribute.get()))
+            base_strength: int = int(set_def(self.__base_strength.get()))
+            pet_bonus: float = to_high_val(set_def(self.__pet_bonus.get()))
+            potion: float = to_high_val(set_def(self.__potion.get()))
+            head_bonus: int = int(set_def(self.__head_bonus.get()))
+            chest_bonus: int = int(set_def(self.__chest_bonus.get()))
+            arm_bonus: int = int(set_def(self.__arm_bonus.get()))
+            shoe_bonus: int = int(set_def(self.__shoe_bonus.get()))
+            necklace_bonus: int = int(set_def(self.__necklace_bonus.get()))
+            belt_bonus: int = int(set_def(self.__belt_bonus.get()))
+            ring_bonus: int = int(set_def(self.__ring_bonus.get()))
+            shamrock_bonus: int = int(set_def(self.__shamrock_bonus.get()))
+            weapon_attribute_2: int = int(set_def(self.__weapon_attribute_2.get()))
+            weapon_dmg_2: int = int(set_def(self.__weapon_dmg_2.get()))
+            portal_bonus: int = int(set_def(self.__portal_bonus.get()))
 
         except ValueError:
             # throwing an error messagebox if a value was erroneously entered or a character was written in it instead
@@ -317,59 +292,41 @@ class App:
             return None
 
         # adding armor values to one variable
-        armor = weapon_attri + head_bonus + chest_bonus + arm_bonus + shoe_bonus + necklace_bonus + belt_bonus + \
+        armor = weapon_attribute + head_bonus + chest_bonus + arm_bonus + shoe_bonus + necklace_bonus + belt_bonus + \
                 ring_bonus + shamrock_bonus
         strength = base_strength
 
         # checks which class is chosen
-        if self.var.get() == "Battle Mage" or self.var.get() == "Berserk":
+        if self.__var.get() == "Battle Mage" or self.__var.get() == "Berserk":
             # class specific calculations for damage
             bonus = armor * 0.11
             bonus = round(bonus, 2)
             strength += bonus
-            strength += armor
-            if potion != 0:
-                strength *= potion
-            strength = round(strength, 2)
-            if pet_bonus != 0:
-                strength *= pet_bonus
-            strength = round(strength)
+            strength = calc_dmg(strength, armor, potion, pet_bonus)
             dmg = weapon_dmg * (1 + strength / 10)
-
-        elif self.var.get() == "Assassin":
-            armor += weapon_attri_2
-            strength += armor
-            if potion != 0:
-                strength *= potion
-            strength = round(strength, 2)
-            if pet_bonus != 0:
-                strength *= pet_bonus
-            strength = round(strength)
+        elif self.__var.get() == "Assassin":
+            armor += weapon_attribute_2
+            strength = calc_dmg(strength, armor, potion, pet_bonus)
             dmg = (weapon_dmg + weapon_dmg_2) * 0.625 * (1 + strength / 10)
-
         else:
-            strength += armor
-            if potion != 0:
-                strength *= potion
-            strength = round(strength, 2)
-            if pet_bonus != 0:
-                strength *= pet_bonus
-            strength = round(strength)
+            strength = calc_dmg(strength, armor, potion, pet_bonus)
             dmg = weapon_dmg * (1 + strength / 10)
+
         # adding portal bonus to damage
         if portal_bonus != 0:
             dmg /= 100
             portal_bonus += 100
             dmg *= portal_bonus
+
         # rounding the damage to an int
         dmg = round(dmg)
 
         # setting the variable that displays the damage
-        self.dmg.set(str(dmg))
+        self.__dmg.set(str(dmg))
 
 
 if __name__ == "__main__":
     # checks if the program is started as a main program and isn't imported
-    root = ThemedTk(theme="equilux")
+    root = CTk("system")
     calc = App(root)
     root.mainloop()

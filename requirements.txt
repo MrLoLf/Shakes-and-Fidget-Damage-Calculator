@@ -1,1 +1,1 @@
-ttkthemes~=3.2.2
+customtkinter~=4.6.3
