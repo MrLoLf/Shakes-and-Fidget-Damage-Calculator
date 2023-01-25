@@ -12,7 +12,7 @@ You can download the .exe from [**GitHub Releases**](https://github.com/MrLoLf/S
 With the .exe you **don't need Python installed or any library**.
 
 ### Usage
-- Make sure you have Python correctly installed and ttkthemes
+- Make sure you have Python correctly installed and customtkinter
 - Or make sure to have the .exe downloaded
 - It takes some time to start so be patiently
 - Double-click the downloaded .pyw file or the .exe and enter your values. Don't forget to add the gems values on your normal values.
